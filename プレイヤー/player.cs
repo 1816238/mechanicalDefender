@@ -38,10 +38,30 @@ public class player : MonoBehaviour
     //移動状態のフラグ
     public bool moveFlag = false;
 
-    //ショット変数
+    //ショットオブジェクト
     public GameObject LeftBullet;
     public GameObject RightBullet;
     public GameObject ShoulderBullet;
+    //弾発生箇所
+    public Transform bulletStartPosLift;
+    public Transform bulletStartPosRight;
+    public Transform bulletStartPosShoulderLift;
+    public Transform bulletStartPosShoulderRight;
+
+    //防衛兵器オブジェクト
+    public GameObject upDefenseWeapon;
+    public GameObject rightDefenseWeapon;
+    public GameObject downDefenseWeapon;
+    public GameObject liftDefenseWeapon;
+    //防衛兵器生成箇所
+    public Transform defenseWeaponStartPos;
+    //1回のみ生成するための変数
+    public bool cooltimeDefenseWeaponFlag;
+    public float cooltime;
+    public float cooltimeMax=10;
+
+    public float testUpDown;
+    public float testRightLift;
 
     //右手実弾変数
     public float bulletAmmo = 50;
@@ -77,17 +97,12 @@ public class player : MonoBehaviour
     public bool bulletEnerugyBoust = false;
 
     //1回のみ読み込みフラグ
-
     public bool oneActionFlag = false;
     //Heat変数
     public GameObject HeatText;
     public AudioClip HeatSound;
 
-    //弾発生箇所
-    public Transform BulletStartPosLift;
-    public Transform BulletStartPosRight;
-    public Transform BulletStartPosShoulderLift;
-    public Transform BulletStartPosShoulderRight;
+    
    
     //　メインカメラ
     //public GameObject mainCamera;
@@ -109,6 +124,7 @@ public class player : MonoBehaviour
         re = GetComponent<Rigidbody>();
         speedX = 0;
         speedZ = 0;
+        cooltimeDefenseWeaponFlag = false;
         audioSource = GetComponent<AudioSource>();
         //energySlider = GameObject.Find("energySlider").GetComponent<Slider>();
         bulletAmmoText.text = "" + bulletAmmo;
@@ -209,7 +225,30 @@ public class player : MonoBehaviour
                 }
             }
         }
-        
+        /////////////////////////////////////////////////////
+        //防衛兵器生成処理
+        /////////////////////////////////////////////////////
+        if (Input.GetAxis("UpDown") == 1&&testUpDown==0)
+        {
+            UpCreate();
+        }
+        if (Input.GetAxis("UpDown") == -1 && testUpDown == 0)
+        {
+            DownCreate();
+        }
+        if (Input.GetAxis("RigthLift") == -1 && testRightLift == 0)
+        {
+            RightCreate();
+        }
+        if (Input.GetAxis("RigthLift") == 1 && testRightLift == 0)
+        {
+            LiftCreate();
+        }
+
+
+
+        testUpDown = Input.GetAxis("UpDown");
+        testRightLift= Input.GetAxis("RigthLift");
         /////////////////////////////////////////////////////
         //シールド発生処理
         /////////////////////////////////////////////////////
@@ -279,7 +318,7 @@ public class player : MonoBehaviour
     //右手弾丸を作成//////////////////////////////////////////////////////////////////////////////////////////////////
     IEnumerator CreateBlleutRight()///////////////////////////////////////////////////////////////////////////////////
     {
-        GameObject.Instantiate(RightBullet, BulletStartPosRight.position, BulletStartPosRight.rotation);
+        GameObject.Instantiate(RightBullet, bulletStartPosRight.position, bulletStartPosRight.rotation);
         yield return null;
     }
     //弾丸の左手生成処理 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -292,7 +331,7 @@ public class player : MonoBehaviour
     //左手弾丸を作成
     IEnumerator CreateBlleutLift()
     {
-        GameObject.Instantiate(LeftBullet, BulletStartPosLift.position, BulletStartPosLift.rotation); ;
+        GameObject.Instantiate(LeftBullet, bulletStartPosLift.position, bulletStartPosLift.rotation); ;
         yield return null;
     }
     //肩武器の右手生成処理//////////////////////////////////////////////////////////////////////////////////////////////
@@ -304,8 +343,8 @@ public class player : MonoBehaviour
     //肩武器弾丸を作成//////////////////////////////////////////////////////////////////////////////////////////////////
     IEnumerator CreateBlleutShoulder()///////////////////////////////////////////////////////////////////////////////////
     {
-        GameObject.Instantiate(ShoulderBullet, BulletStartPosShoulderRight.position, BulletStartPosShoulderRight.rotation);
-        GameObject.Instantiate(ShoulderBullet, BulletStartPosShoulderLift.position, BulletStartPosShoulderLift.rotation);
+        GameObject.Instantiate(ShoulderBullet, bulletStartPosShoulderRight.position, bulletStartPosShoulderRight.rotation);
+        GameObject.Instantiate(ShoulderBullet, bulletStartPosShoulderLift.position, bulletStartPosShoulderLift.rotation);
         yield return null;
     }
     //右手Reload文字表示//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -367,6 +406,49 @@ public class player : MonoBehaviour
         }
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///-----------------------------------------防衛兵器生成処理-------------------------------------------------------///
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///上ボタンでの生成
+    void UpCreate()
+    {
+        StartCoroutine(this.CreateUpDefenseWeapon());
+    }
+    IEnumerator CreateUpDefenseWeapon()///////////////////////////////////////////////////////////////////////////////////
+    {
+        GameObject.Instantiate(upDefenseWeapon, defenseWeaponStartPos.position, defenseWeaponStartPos.rotation);
+        yield return null;
+    }
+    ///下ボタンでの生成
+    void DownCreate()
+    {
+        StartCoroutine(this.CreateDownDefenseWeapon());
+    }
+    IEnumerator CreateDownDefenseWeapon()///////////////////////////////////////////////////////////////////////////////////
+    {
+        GameObject.Instantiate(downDefenseWeapon, defenseWeaponStartPos.position, defenseWeaponStartPos.rotation);
+        yield return null;
+    }
+    ///右ボタンでの生成
+    void RightCreate()
+    {
+        StartCoroutine(this.CreateRightDefenseWeapon());
+    }
+    IEnumerator CreateRightDefenseWeapon()///////////////////////////////////////////////////////////////////////////////////
+    {
+        GameObject.Instantiate(rightDefenseWeapon, defenseWeaponStartPos.position, defenseWeaponStartPos.rotation);
+        yield return null;
+    }
+    ///左ボタンでの生成
+    void LiftCreate()
+    {
+        StartCoroutine(this.CreateLiftDefenseWeapon());
+    }
+    IEnumerator CreateLiftDefenseWeapon()///////////////////////////////////////////////////////////////////////////////////
+    {
+        GameObject.Instantiate(liftDefenseWeapon, defenseWeaponStartPos.position, defenseWeaponStartPos.rotation);
+        yield return null;
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///-----------------------------------------当たり判定処理-----------------------------------------------------///
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void OnCollisionEnter(Collision c)
@@ -382,16 +464,58 @@ public class player : MonoBehaviour
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void move()
     {
+        //加速処理
+        if (Input.GetAxis("A") == 1)
+        {
+            if (bulletEnerugyBoust == false)
+            {
+                Boust = true;
+                ptcl.SetActive(false);
+                ptclBoust.SetActive(true);
+                bulletEnerugy -= 0.2f;
+                if (bulletEnerugy < 0)
+                { 
+                    bulletEnerugyBoust = true;
+                }
+                speedZ = speedMax;
+                speedX = speedMax;
+            }
+        }
+        else
+        {
+            Boust = false;
+            ptcl.SetActive(true);
+            ptclBoust.SetActive(false);
+        }
+
+
+
+
+
         //前移動
         if (Input.GetAxis("Vertical") <= 0)
         {
-            speedZ = speedDf;
+            if (Boust == true)
+            {
+                speedZ = speedMax;
+            }
+            else
+            {
+                speedZ = speedDf;
+            }
             moveFlag = true;
         }
         //後ろ移動
         if (Input.GetAxis("Vertical") >= 0)
         {
-            speedZ = -speedDf;
+            if (Boust == true)
+            {
+                speedZ = -speedMax;
+            }
+            else
+            {
+                speedZ = -speedDf;
+            }
             moveFlag = true;
         }
         //前後移動停止
@@ -403,13 +527,27 @@ public class player : MonoBehaviour
         //左移動
         if (Input.GetAxis("Horizontal") >= 0)
         {
-            speedX = speedDf;
+            if (Boust == true)
+            {
+                speedX = speedMax;
+            }
+            else
+            {
+                speedX = speedDf;
+            }
             moveFlag = true;
         }
         //右移動
         if (Input.GetAxis("Horizontal") <= 0)
         {
-            speedX = -speedDf;
+            if (Boust == true)
+            {
+                speedX = -speedMax;
+            }
+            else
+            {
+                speedX =-speedDf;
+            }
             moveFlag = true;
         }
 
@@ -423,39 +561,13 @@ public class player : MonoBehaviour
             moveFlag = false;
         }
 
-        
-
         if (moveFlag == true)
         {
             velocity = gameObject.transform.rotation * new Vector3(speedX, 0, speedZ);
             re.velocity = transform.forward + velocity;
         }
 
-        //加速処理
-        //if (Input.GetAxis("Boust") == 1)
-        //{
-        //    if (bulletEnerugyBoust == false)
-        //    {
-        //        Boust = true;
-        //        ptcl.SetActive(false);
-        //        ptclBoust.SetActive(true);
-        //        bulletEnerugy -= 0.2f;
-        //        if (bulletEnerugy < 0)
-        //        {
-        //            speedX = speedDf;
-        //            speedZ = speedDf;
-        //            bulletEnerugyBoust = true;
-        //        }
-        //        speed = speedMax;
-        //    }
-        //}
-        //else
-        //{
-        //    Boust = false;
-        //    ptcl.SetActive(true);
-        //    ptclBoust.SetActive(false);
-        //    speed = speedDf;
-        //}
+        
     }
     void ChangeScene()
     {
