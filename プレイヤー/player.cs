@@ -12,16 +12,21 @@ public class player : MonoBehaviour
 
     AudioSource audioSource;
     //アニメーター
-    //Animator animator;
+    Animator animator;
     //キャラクターコントローラー
     CharacterController controller;
+
+    //開始終了時フラグ
+    public bool combatFlag;
+
+
     //移動速度
     public float speedX;
     public float speedZ;
     public float speedDf = 10.0f;
     public float speedMax = 20.0f;
     public float speedUpDown = 0.0f;
-    public bool Boust = false;
+    public bool boustFlag = false;
     public GameObject ptcl;
     public GameObject ptclBoust;
 
@@ -37,6 +42,11 @@ public class player : MonoBehaviour
 
     //移動状態のフラグ
     public bool moveFlag = false;
+    //移動時のバーナー表示フラグ
+    public GameObject shoulderRightBurner;
+    public GameObject shoulderLiftBurner;
+    public GameObject legRightBurner;
+    public GameObject legLiftBurner;
 
     //ショットオブジェクト
     public GameObject LeftBullet;
@@ -59,7 +69,7 @@ public class player : MonoBehaviour
     public bool cooltimeDefenseWeaponFlag;
     public float cooltime;
     public float cooltimeMax=10;
-
+    //テスト数値
     public float testUpDown;
     public float testRightLift;
 
@@ -124,6 +134,7 @@ public class player : MonoBehaviour
         re = GetComponent<Rigidbody>();
         speedX = 0;
         speedZ = 0;
+        combatFlag = true;
         cooltimeDefenseWeaponFlag = false;
         audioSource = GetComponent<AudioSource>();
         //energySlider = GameObject.Find("energySlider").GetComponent<Slider>();
@@ -213,7 +224,7 @@ public class player : MonoBehaviour
         }
         else
         {
-            if (Boust == false)
+            if (boustFlag == false)
             {
                 if (bulletEnerugy <= bulletEnerugyMax)
                 {
@@ -231,10 +242,12 @@ public class player : MonoBehaviour
         if (Input.GetAxis("UpDown") == 1&&testUpDown==0)
         {
             UpCreate();
+            combatFlag = true;
         }
         if (Input.GetAxis("UpDown") == -1 && testUpDown == 0)
         {
             DownCreate();
+            combatFlag = false;
         }
         if (Input.GetAxis("RigthLift") == -1 && testRightLift == 0)
         {
@@ -469,7 +482,7 @@ public class player : MonoBehaviour
         {
             if (bulletEnerugyBoust == false)
             {
-                Boust = true;
+                boustFlag = true;
                 ptcl.SetActive(false);
                 ptclBoust.SetActive(true);
                 bulletEnerugy -= 0.2f;
@@ -483,7 +496,7 @@ public class player : MonoBehaviour
         }
         else
         {
-            Boust = false;
+            boustFlag = false;
             ptcl.SetActive(true);
             ptclBoust.SetActive(false);
         }
@@ -495,7 +508,7 @@ public class player : MonoBehaviour
         //前移動
         if (Input.GetAxis("Vertical") <= 0)
         {
-            if (Boust == true)
+            if (boustFlag == true)
             {
                 speedZ = speedMax;
             }
@@ -503,12 +516,20 @@ public class player : MonoBehaviour
             {
                 speedZ = speedDf;
             }
+            shoulderRightBurner.SetActive(true);
+            shoulderLiftBurner.SetActive(true);
             moveFlag = true;
         }
+        //else
+        //{
+        //    shoulderRightBurner.SetActive(false);
+        //    shoulderLiftBurner.SetActive(false);
+        //}
+
         //後ろ移動
         if (Input.GetAxis("Vertical") >= 0)
         {
-            if (Boust == true)
+            if (boustFlag == true)
             {
                 speedZ = -speedMax;
             }
@@ -516,18 +537,22 @@ public class player : MonoBehaviour
             {
                 speedZ = -speedDf;
             }
+            //shoulderRightBurner.SetActive(false);
+            //shoulderLiftBurner.SetActive(false);
             moveFlag = true;
         }
         //前後移動停止
         if (Input.GetAxis("Vertical") == 0)
         {
             speedZ = 0;
+            shoulderRightBurner.SetActive(false);
+            shoulderLiftBurner.SetActive(false);
         }
 
         //左移動
         if (Input.GetAxis("Horizontal") >= 0)
         {
-            if (Boust == true)
+            if (boustFlag == true)
             {
                 speedX = speedMax;
             }
@@ -535,12 +560,18 @@ public class player : MonoBehaviour
             {
                 speedX = speedDf;
             }
+            legLiftBurner.SetActive(true);
             moveFlag = true;
         }
+        //else
+        //{
+        //    legLiftBurner.SetActive(false);
+        //}
+
         //右移動
         if (Input.GetAxis("Horizontal") <= 0)
         {
-            if (Boust == true)
+            if (boustFlag == true)
             {
                 speedX = -speedMax;
             }
@@ -548,12 +579,19 @@ public class player : MonoBehaviour
             {
                 speedX =-speedDf;
             }
+            legRightBurner.SetActive(true);
             moveFlag = true;
         }
+        //else
+        //{
+        //    legRightBurner.SetActive(false);
+        //}
 
         if (Input.GetAxis("Horizontal") == 0)
         {
             speedX = 0;
+            legLiftBurner.SetActive(false);
+            legRightBurner.SetActive(false);
         }
 
         if (Input.GetAxis("Horizontal") == 0&& Input.GetAxis("Vertical") == 0)
