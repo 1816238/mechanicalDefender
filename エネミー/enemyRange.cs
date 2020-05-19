@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class enemyRange : MonoBehaviour
 {
+   
     //攻撃するかの判定
     public bool atackFlag=false;
     //public GameObject enemyA;
     //判定の時間
     public float atackTime;
     public float atackTimeOut = 2.0f;
+    
     void Start()
     {
-        
+      
     }
 
     void Update()
@@ -29,6 +31,7 @@ public class enemyRange : MonoBehaviour
                 atackTime = 0;
             }
         }
+        
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///-----------------------------------------当たり判定処理-----------------------------------------------------///

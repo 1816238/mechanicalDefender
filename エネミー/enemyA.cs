@@ -11,7 +11,8 @@ public class enemyA : MonoBehaviour
     Animator animator;
     //弾の格納
     public GameObject enemyBullet;
-    public Transform enemyBulletStartPos;
+    public Transform enemyBulletStartRightPos;
+    public Transform enemyBulletStartLiftPos;
     //オーディオソース
     AudioSource audioSource;
     //ナビメッシュ
@@ -36,6 +37,7 @@ public class enemyA : MonoBehaviour
     public string enemyBulletTag;//エネミーの弾丸判別
 
     public GameObject explosion;//爆発のオブジェクト
+    public bool explosionFlag;
     public Transform explosionPos;//爆発の発生個所
     public AudioClip explosionSound;//爆発のサウンド
 
@@ -48,6 +50,7 @@ public class enemyA : MonoBehaviour
     {
         atackFlag = false;//攻撃判定初期化
         deathFlag = false;//死亡判定初期化
+        target = GameObject.FindGameObjectWithTag("Tower");//ターゲットをTowerのタグに設定
         atackRange = transform.GetChild(2).gameObject;
         navMesh = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
@@ -59,7 +62,7 @@ public class enemyA : MonoBehaviour
     {
         range = atackRange.GetComponent<enemyRange>();
         atackFlag = range.atackFlag;
-        //enemy_atack = script.enemy_distance;
+        
 
 
         //ナビメッシュでの移動
@@ -89,10 +92,23 @@ public class enemyA : MonoBehaviour
         /////////////////////////////////////////////////////
         //死亡処理
         /////////////////////////////////////////////////////
+        if (Life <= 0)
+        {
+            deathFlag = true;
+        }
         if (deathFlag==true)
         {
+            GetComponent<BoxCollider>().enabled = false;
+            if (explosionFlag==false)
+            {
+                audioSource.PlayOneShot(explosionSound);
+                GameObject.Instantiate(explosion, explosionPos.position, explosionPos.rotation);
+                explosionFlag = true;
+            }
+            atackTime = atackTimeMax;
             navMesh.speed = 0;
             animator.SetBool("死亡", true);
+            Invoke("Destroy", 3.0f);
         }
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,7 +121,7 @@ public class enemyA : MonoBehaviour
     }
     IEnumerator CreateBlleut()
     {
-        GameObject.Instantiate(enemyBullet, enemyBulletStartPos.position, enemyBulletStartPos.rotation); 
+        GameObject.Instantiate(enemyBullet, enemyBulletStartRightPos.position, enemyBulletStartRightPos.rotation); 
         yield return null;
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,13 +129,17 @@ public class enemyA : MonoBehaviour
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void OnTriggerEnter(Collider c)
     {
-        //if (c.tag == BulletTag)
-        //{
-        //    FindObjectOfType<Score>().AddPoint(10);
-        //    audioSource.PlayOneShot(damegeSound);
-        //    GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
-        //    Life -= 1;
-        //}
+        if (c.tag == playerBulletTag)
+        {
+            //FindObjectOfType<Score>().AddPoint(10);
+            audioSource.PlayOneShot(hitExplosionSound);
+            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            Life -= 1;
+            if(Life==0)
+            {
+                deathFlag = true;
+            }
+        }
         //if (c.tag == BUlletBGTag)
         //{
         //    FindObjectOfType<Score>().AddPoint(30);
