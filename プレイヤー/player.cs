@@ -127,7 +127,8 @@ public class player : MonoBehaviour
     public AudioClip DamegeSound;
 
 
-    public string EnemyBulletTag = "enemyBallet";
+    public string enemyBulletTag = "enemyBallet";
+    public string enemyClawTag="Claw";
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -466,16 +467,27 @@ public class player : MonoBehaviour
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void OnCollisionEnter(Collision c)
     {
-        if (c.gameObject.tag == EnemyBulletTag)
+        if (c.gameObject.tag == enemyBulletTag||c.gameObject.tag==enemyClawTag)
         {
             Life -= 10;
             audioSource.PlayOneShot(DamegeSound);
         }
     }
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///-----------------------------------------移動処理-----------------------------------------------------------///
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void move()
+    void OnTriggerEnter(Collider c)
+    {
+        if (c.gameObject.tag == enemyBulletTag || c.gameObject.tag == enemyClawTag)
+        {
+            Life -= 10;
+            audioSource.PlayOneShot(DamegeSound);
+        }
+
+    }
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///-----------------------------------------移動処理-----------------------------------------------------------///
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void move()
     {
         //加速処理
         if (Input.GetAxis("A") == 1)
