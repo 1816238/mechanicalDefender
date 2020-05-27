@@ -31,7 +31,7 @@ public class enemyA : MonoBehaviour
     public GameObject atackRange;//ターゲットとの距離での判定
 
     public float atackTime;//攻撃判定時の時間
-    public float atackTimeMax = 5.0f;//攻撃判定時を初期化する時間
+    public float atackTimeMax = 10.0f;//攻撃判定時を初期化する時間
 
     public string playerBulletTag="playerBullet";//プレイヤーの弾丸判別
     public string enemyBulletTag;//エネミーの弾丸判別
@@ -44,6 +44,13 @@ public class enemyA : MonoBehaviour
     public GameObject hitExplosion;//被弾爆発のオブジェクト
     public Transform hitExplosionPos;//被弾爆発の発生個所
     public AudioClip hitExplosionSound;//被弾爆発のサウンド
+
+
+    public string power1BulletTag = "BulletPower1";//弾丸判別
+    public string power2BulletTag = "BulletPower2";//弾丸判別
+    public string power3BulletTag = "BulletPower3";//弾丸判別
+    public string power4BulletTag = "BulletPower4";//弾丸判別
+    public string power5BulletTag = "BulletPower5";//弾丸判別
 
 
     void Start()
@@ -129,23 +136,46 @@ public class enemyA : MonoBehaviour
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void OnTriggerEnter(Collider c)
     {
-        if (c.tag == playerBulletTag)
+        if (c.tag == power1BulletTag)
         {
             //FindObjectOfType<Score>().AddPoint(10);
             audioSource.PlayOneShot(hitExplosionSound);
             GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
             Life -= 1;
-            if(Life==0)
-            {
-                deathFlag = true;
-            }
         }
-        //if (c.tag == BUlletBGTag)
-        //{
-        //    FindObjectOfType<Score>().AddPoint(30);
-        //    audioSource.PlayOneShot(damegeSound);
-        //    Life -= 10;
-        //}
+        if (c.tag == power2BulletTag)
+        {
+            //FindObjectOfType<Score>().AddPoint(10);
+            audioSource.PlayOneShot(hitExplosionSound);
+            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            Life -= 2;
+        }
+        if (c.tag == power3BulletTag)
+        {
+            //FindObjectOfType<Score>().AddPoint(10);
+            audioSource.PlayOneShot(hitExplosionSound);
+            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            Life -= 3;
+        }
+        if (c.tag == power4BulletTag)
+        {
+            //FindObjectOfType<Score>().AddPoint(10);
+            audioSource.PlayOneShot(hitExplosionSound);
+            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            Life -= 4;
+        }
+        if (c.tag == power5BulletTag)
+        {
+            //FindObjectOfType<Score>().AddPoint(10);
+            audioSource.PlayOneShot(hitExplosionSound);
+            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            Life -= 5;
+        }
+
+        if (Life == 0)
+        {
+            deathFlag = true;
+        }
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///-----------------------------------------消滅処理-----------------------------------------------------------///

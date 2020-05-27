@@ -83,6 +83,15 @@ public class enemyBoss : MonoBehaviour
     //hit時の小爆発
     public GameObject hitExplosion;
     public Transform hitExplosionPos;
+    public AudioClip hitExplosionSound;//被弾爆発のサウンド
+
+    public string power1BulletTag = "BulletPower1";//弾丸判別
+    public string power2BulletTag = "BulletPower2";//弾丸判別
+    public string power3BulletTag = "BulletPower3";//弾丸判別
+    public string power4BulletTag = "BulletPower4";//弾丸判別
+    public string power5BulletTag = "BulletPower5";//弾丸判別
+
+
 
 
     void Start()
@@ -274,19 +283,43 @@ public class enemyBoss : MonoBehaviour
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void OnTriggerEnter(Collider c)
     {
-        //if (c.tag == BulletTag)
-        //{
-        //    FindObjectOfType<Score>().AddPoint(10);
-        //    audioSource.PlayOneShot(damegeSound);
-        //    GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
-        //    Life -= 1;
-        //}
-        //if (c.tag == BUlletBGTag)
-        //{
-        //    FindObjectOfType<Score>().AddPoint(30);
-        //    audioSource.PlayOneShot(damegeSound);
-        //    Life -= 10;
-        //}
+        if (c.tag == power1BulletTag)
+        {
+            //FindObjectOfType<Score>().AddPoint(10);
+            audioSource.PlayOneShot(hitExplosionSound);
+            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            life -= 1;
+        }
+        if (c.tag == power2BulletTag)
+        {
+            //FindObjectOfType<Score>().AddPoint(10);
+            audioSource.PlayOneShot(hitExplosionSound);
+            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            life -= 2;
+        }
+        if (c.tag == power3BulletTag)
+        {
+            //FindObjectOfType<Score>().AddPoint(10);
+            audioSource.PlayOneShot(hitExplosionSound);
+            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            life -= 3;
+        }
+        if (c.tag == power4BulletTag)
+        {
+            //FindObjectOfType<Score>().AddPoint(10);
+            audioSource.PlayOneShot(hitExplosionSound);
+            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            life -= 4;
+        }
+        if (c.tag == power5BulletTag)
+        {
+            //FindObjectOfType<Score>().AddPoint(10);
+            audioSource.PlayOneShot(hitExplosionSound);
+            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            life -= 5;
+        }
+
+        
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///-----------------------------------------アニメーション中のフラグ変更用-------------------------------------///

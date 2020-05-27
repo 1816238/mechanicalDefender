@@ -42,6 +42,7 @@ public class player : MonoBehaviour
 
     //移動状態のフラグ
     public bool moveFlag = false;
+
     //移動時のバーナー表示フラグ
     public GameObject shoulderRightBurner;
     public GameObject shoulderLiftBurner;
@@ -52,6 +53,7 @@ public class player : MonoBehaviour
     public GameObject LeftBullet;
     public GameObject RightBullet;
     public GameObject ShoulderBullet;
+
     //弾発生箇所
     public Transform bulletStartPosLift;
     public Transform bulletStartPosRight;
@@ -63,12 +65,21 @@ public class player : MonoBehaviour
     public GameObject rightDefenseWeapon;
     public GameObject downDefenseWeapon;
     public GameObject liftDefenseWeapon;
+
+    //防衛兵器ポイント
+    public int defensePoint;
+    public Text defensePointText;
+    public AudioClip pointSound;
+
+
     //防衛兵器生成箇所
     public Transform defenseWeaponStartPos;
+    
     //1回のみ生成するための変数
     public bool cooltimeDefenseWeaponFlag;
     public float cooltime;
     public float cooltimeMax=10;
+    
     //テスト数値
     public float testUpDown;
     public float testRightLift;
@@ -108,27 +119,21 @@ public class player : MonoBehaviour
 
     //1回のみ読み込みフラグ
     public bool oneActionFlag = false;
+
     //Heat変数
     public GameObject HeatText;
     public AudioClip HeatSound;
 
-    
-   
-    //　メインカメラ
-    //public GameObject mainCamera;
-    ////　切り替える他のカメラ
-    //public GameObject sabuCamera;
-    //ターゲットロックオンフラグ
-    //public bool tagetoFlag = false;
-    //public GameObject targetObject;
-    //public int roteY;
-
+    //終了時のフラグ
     public static bool endFlag;
+
+    //ダメージ音
     public AudioClip DamegeSound;
 
-
-    public string enemyBulletTag = "enemyBallet";
+    //タグ格納
+    public string enemyBulletTag = "EnemyBullet";
     public string enemyClawTag="Claw";
+    public string crystalTag = "Crystal";
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -139,7 +144,9 @@ public class player : MonoBehaviour
         cooltimeDefenseWeaponFlag = false;
         audioSource = GetComponent<AudioSource>();
         //energySlider = GameObject.Find("energySlider").GetComponent<Slider>();
-        bulletAmmoText.text = "" + bulletAmmo;
+        bulletAmmoText.text = "" + bulletAmmo;//残弾テキストの更新
+        defensePoint = 1000;
+        defensePointText.text = "" + defensePoint;//ポイントテキストの更新
         //LifeText.text = "" + Life;
         endFlag = false;
     }
@@ -297,6 +304,8 @@ public class player : MonoBehaviour
         bulletShoulderAmmoText.text = "" + bulletShoulderAmoo;
         ReloadSlider.value = bulletAmmoCount;
         ShoulderReloadSlider.value = bulletShoulderAmmoCount;
+        //ポイントの更新
+        defensePointText.text = "" + defensePoint;
     }
 
 
@@ -472,6 +481,10 @@ public class player : MonoBehaviour
             Life -= 10;
             audioSource.PlayOneShot(DamegeSound);
         }
+        if (c.gameObject.tag == crystalTag)
+        {
+            defensePoint +=10;
+        }
     }
     void OnTriggerEnter(Collider c)
     {
@@ -479,6 +492,11 @@ public class player : MonoBehaviour
         {
             Life -= 10;
             audioSource.PlayOneShot(DamegeSound);
+        }
+        if (c.gameObject.tag == crystalTag)
+        {
+            defensePoint += 10;
+            audioSource.PlayOneShot(pointSound);
         }
 
     }

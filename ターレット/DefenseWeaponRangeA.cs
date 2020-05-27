@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class enemyRange : MonoBehaviour
+public class DefenseWeaponRangeA : MonoBehaviour
 {
-   
     //攻撃するかの判定
-    public bool atackFlag=false;
+    public bool atackFlag = false;
     //public GameObject enemyA;
     //判定の時間
     public float atackTime;
     public float atackTimeOut = 2.0f;
-    
+
     void Start()
     {
-      
+
     }
 
     void Update()
@@ -31,14 +30,18 @@ public class enemyRange : MonoBehaviour
                 atackTime = 0;
             }
         }
-        
+
     }
+
+
+
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///-----------------------------------------当たり判定処理-----------------------------------------------------///
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private void OnTriggerStay(Collider c)
     {
-        if (c.gameObject.tag == "Player")
+        if (c.gameObject.tag == "Enemy")
         {
             atackFlag = true;
         }
