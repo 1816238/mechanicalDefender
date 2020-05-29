@@ -87,7 +87,7 @@ public class WaveSetUp : MonoBehaviour
                     enemyGenerationTime -= Time.deltaTime;
                     if (enemyGenerationTime < 0)
                     {
-                        Instantiate(enemys[enemyNumber], enemySetPos[enemyNumber], Quaternion.identity);
+                        Instantiate(enemys[enemyNumber], enemySetPos[number], Quaternion.identity);
                         enemyCount++;
                         enemyGenerationTime = enemyGenerationTimeMax;
                     }
@@ -114,7 +114,7 @@ public class WaveSetUp : MonoBehaviour
                     enemyGenerationTime -= Time.deltaTime;
                     if (enemyGenerationTime < 0)
                     {
-                        Instantiate(enemys[enemyNumber], enemySetPos[enemyNumber], Quaternion.identity);
+                        Instantiate(enemys[enemyNumber], enemySetPos[number], Quaternion.identity);
                         enemyCount++;
                         enemyGenerationTime = enemyGenerationTimeMax;
                     }
@@ -149,7 +149,7 @@ public class WaveSetUp : MonoBehaviour
                         {
                             enemyNumber = 4;
                         }
-                        Instantiate(enemys[enemyNumber], enemySetPos[enemyNumber], Quaternion.identity);
+                        Instantiate(enemys[enemyNumber], enemySetPos[number], Quaternion.identity);
                         enemyCount++;
                         enemyGenerationTime = enemyGenerationTimeMax;
                     }

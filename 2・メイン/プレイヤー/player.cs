@@ -125,7 +125,7 @@ public class player : MonoBehaviour
     public AudioClip HeatSound;
 
     //終了時のフラグ
-    public static bool endFlag;
+    public bool endFlag;
 
     //ダメージ音
     public AudioClip DamegeSound;
@@ -158,7 +158,7 @@ public class player : MonoBehaviour
         if (Life <= 0)
         {
             endFlag = true;
-            Invoke("ChangeScene", 3.0F);
+            //Invoke("ChangeScene", 3.0F);
         }
         //移動関数
         move();
@@ -306,6 +306,11 @@ public class player : MonoBehaviour
         ShoulderReloadSlider.value = bulletShoulderAmmoCount;
         //ポイントの更新
         defensePointText.text = "" + defensePoint;
+
+        if(Life<0)
+        {
+            endFlag = true;
+        }
     }
 
 

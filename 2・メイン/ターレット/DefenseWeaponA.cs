@@ -15,6 +15,7 @@ public class DefenseWeaponA : MonoBehaviour
     //弾丸・出現箇所の格納
     public GameObject sentryBullet;
     public Transform sentryBulletStartPos;
+    public GameObject fireEffect;
 
     public bool atackFlag;//攻撃時のフラグ
     public bool angleFlag;//回転のフラグ
@@ -124,6 +125,7 @@ public class DefenseWeaponA : MonoBehaviour
     IEnumerator CreateBlleut()
     {
         GameObject.Instantiate(sentryBullet, sentryBulletStartPos.position, sentryBulletStartPos.rotation);
+        GameObject.Instantiate(fireEffect, sentryBulletStartPos.position, sentryBulletStartPos.rotation);
         yield return null;
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
