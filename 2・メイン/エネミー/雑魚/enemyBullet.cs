@@ -20,7 +20,8 @@ public class enemyBullet : MonoBehaviour
 
     void OnTriggerEnter(Collider c)
     {
-        if (c.tag == playerTag || c.tag == towerTag||c.tag== defenseweaponTag)
+        lifeTime -= Time.deltaTime;
+        if (c.tag == playerTag || c.tag == towerTag||c.tag== defenseweaponTag||lifeTime<0)
         {
             Destroy(gameObject);
         }

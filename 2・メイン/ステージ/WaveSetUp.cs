@@ -29,10 +29,12 @@ public class WaveSetUp : MonoBehaviour
 
 
 
-    //public GameObject enemyA2;
-    //public GameObject enemyB1;
-    //public GameObject enemyB2;
-    //public GameObject enemyBoss;
+    //UI用WAVE表示
+    public GameObject intervalText;
+    public GameObject wave1Text;
+    public GameObject wave2Text;
+    public GameObject wave3Text;
+
 
     //エネミーの数
     public int enemyCount;
@@ -71,133 +73,158 @@ public class WaveSetUp : MonoBehaviour
         waveEnd = false;
         audioSource.clip = intervaBGM;
         audioSource.Play();
+        intervalText.SetActive(true);
     }
 
     void Update()
     {
         if (intervalFlag == false)
         {
+            //出現地点のランダム取得
             number = Random.Range(0, enemySetPos.Length);
-
+            //ウェーブ1
             if (waveCount == 0)
             {
-                enemyNumber= Random.Range(0, enemyWave1Number);
-                if (enemyCount<enemyWave1CountMax)
-                {
-                    enemyGenerationTime -= Time.deltaTime;
-                    if (enemyGenerationTime < 0)
-                    {
-                        Instantiate(enemys[enemyNumber], enemySetPos[number], Quaternion.identity);
-                        enemyCount++;
-                        enemyGenerationTime = enemyGenerationTimeMax;
-                    }
-                }
-                if (enemyCount == enemyWave1CountMax)
-                {
-                    enemyDefeatCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
-                    if(enemyDefeatCount==0)
-                    {
-
-                        audioSource.clip = intervaBGM;
-                        audioSource.Play();
-                        waveCount++;
-                        intervalFlag = true;
-                    }
-                }
+                Wave1();
             }
-
+            //ウェーブ2
             if (waveCount == 1)
             {
-                enemyNumber = Random.Range(0, enemyWave2Number);
-                if (enemyCount < enemyWave2CountMax)
-                {
-                    enemyGenerationTime -= Time.deltaTime;
-                    if (enemyGenerationTime < 0)
-                    {
-                        Instantiate(enemys[enemyNumber], enemySetPos[number], Quaternion.identity);
-                        enemyCount++;
-                        enemyGenerationTime = enemyGenerationTimeMax;
-                    }
-                }
-                if (enemyCount == enemyWave2CountMax)
-                {
-                    enemyDefeatCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
-                    if (enemyDefeatCount == 0)
-                    {
-                        audioSource.clip = intervaBGM;
-                        audioSource.Play();
-                        waveCount++;
-                        intervalFlag = true;
-                    }
-                }
+                Wave2();
             }
-
+            //ウェーブ3
             if (waveCount == 2)
             {
-                enemyNumber = Random.Range(0, enemyWave2Number);
-                if (enemyCount < enemyWave3CountMax)
-                {
-                    enemyGenerationTime -= Time.deltaTime;
-                    if (enemyGenerationTime < 0)
-                    {
-                        if(enemyCount==enemyWave3BossNumberA||
-                           enemyCount==enemyWave3BossNumberB||
-                           enemyCount==enemyWave3BossNumberC||
-                           enemyCount==enemyWave3BossNumberD||
-                           enemyCount==enemyWave3BossNumberE||
-                           enemyCount==enemyWave3BossNumberE)
-                        {
-                            enemyNumber = 4;
-                        }
-                        Instantiate(enemys[enemyNumber], enemySetPos[number], Quaternion.identity);
-                        enemyCount++;
-                        enemyGenerationTime = enemyGenerationTimeMax;
-                    }
-                }
-                if (enemyCount == enemyWave3CountMax)
-                {
-                    enemyDefeatCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
-                    if (enemyDefeatCount == 0)
-                    {
-                        audioSource.clip = intervaBGM;
-                        audioSource.Play();
-                        waveCount++;
-                        intervalFlag = true;
-                    }
-                }
+                Wave3();
             }
-
-
-
         }
-        else
+        else//インターバル時の処理
         {
             intervalTime += Time.deltaTime;
             if(intervalTime>intervalTimeMax)
             {
                 if (waveCount==0)
                 {
+                    intervalText.SetActive(false);
+                    wave1Text.SetActive(true);
                     audioSource.clip = wave1BGM;
                 }
                 if (waveCount == 1)
                 {
+                    intervalText.SetActive(false);
+                    wave2Text.SetActive(true);
                     audioSource.clip = wave2BGM;
                 }
                 if (waveCount == 2)
                 {
+                    intervalText.SetActive(false);
+                    wave3Text.SetActive(true);
                     audioSource.clip = wave3BGM;
                 }
-
-
-
                 audioSource.Play();
-
                 intervalFlag = false;
                 intervalTime = 0;
             }
         }
+    }
 
-
-
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///-----------------------------------------WAVE1処理-----------------------------------------------------///
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    void Wave1()
+    {
+        enemyNumber = Random.Range(0, enemyWave1Number);
+        if (enemyCount < enemyWave1CountMax)
+        {
+            enemyGenerationTime -= Time.deltaTime;
+            if (enemyGenerationTime < 0)
+            {
+                Instantiate(enemys[enemyNumber], enemySetPos[number], Quaternion.identity);
+                enemyCount++;
+                enemyGenerationTime = enemyGenerationTimeMax;
+            }
+        }
+        if (enemyCount == enemyWave1CountMax)
+        {
+            enemyDefeatCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
+            if (enemyDefeatCount == 0)
+            {
+                wave1Text.SetActive(false);
+                intervalText.SetActive(true);
+                audioSource.clip = intervaBGM;
+                audioSource.Play();
+                waveCount++;
+                intervalFlag = true;
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///-----------------------------------------WAVE2処理-----------------------------------------------------///
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    void Wave2()
+    {
+        enemyNumber = Random.Range(0, enemyWave2Number);
+        if (enemyCount < enemyWave2CountMax)
+        {
+            enemyGenerationTime -= Time.deltaTime;
+            if (enemyGenerationTime < 0)
+            {
+                Instantiate(enemys[enemyNumber], enemySetPos[number], Quaternion.identity);
+                enemyCount++;
+                enemyGenerationTime = enemyGenerationTimeMax;
+            }
+        }
+        if (enemyCount == enemyWave2CountMax)
+        {
+            enemyDefeatCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
+            if (enemyDefeatCount == 0)
+            {
+                wave2Text.SetActive(false);
+                intervalText.SetActive(true);
+                audioSource.clip = intervaBGM;
+                audioSource.Play();
+                waveCount++;
+                intervalFlag = true;
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///-----------------------------------------WAVE2処理-----------------------------------------------------///
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    void Wave3()
+    {
+        enemyNumber = Random.Range(0, enemyWave2Number);
+        if (enemyCount < enemyWave3CountMax)
+        {
+            enemyGenerationTime -= Time.deltaTime;
+            if (enemyGenerationTime < 0)
+            {
+                if (enemyCount == enemyWave3BossNumberA ||
+                   enemyCount == enemyWave3BossNumberB ||
+                   enemyCount == enemyWave3BossNumberC ||
+                   enemyCount == enemyWave3BossNumberD ||
+                   enemyCount == enemyWave3BossNumberE ||
+                   enemyCount == enemyWave3BossNumberE)
+                {
+                    enemyNumber = 4;
+                }
+                Instantiate(enemys[enemyNumber], enemySetPos[number], Quaternion.identity);
+                enemyCount++;
+                enemyGenerationTime = enemyGenerationTimeMax;
+            }
+        }
+        if (enemyCount == enemyWave3CountMax)
+        {
+            enemyDefeatCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
+            if (enemyDefeatCount == 0)
+            {
+                wave3Text.SetActive(false);
+                intervalText.SetActive(true);
+                audioSource.clip = intervaBGM;
+                audioSource.Play();
+                waveCount++;
+                intervalFlag = true;
+            }
+        }
     }
 }

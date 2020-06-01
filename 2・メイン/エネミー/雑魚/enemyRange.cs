@@ -38,7 +38,7 @@ public class enemyRange : MonoBehaviour
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private void OnTriggerStay(Collider c)
     {
-        if (c.gameObject.tag == "Player"|| c.gameObject.tag == "Tower")
+        if (c.gameObject.tag == "Player"|| c.gameObject.tag == "Tower" || c.gameObject.tag == "DefenseWeapon")
         {
             atackFlag = true;
         }

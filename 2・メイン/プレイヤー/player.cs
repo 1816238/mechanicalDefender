@@ -37,6 +37,7 @@ public class player : MonoBehaviour
     public float energy = 1000;
     public float energyMax = 1000;
     public Slider energySlider;
+    public Image energyImage;
 
     //public GameObject LifeText = null;
 
@@ -266,38 +267,17 @@ public class player : MonoBehaviour
             LiftCreate();
         }
 
-
-
         testUpDown = Input.GetAxis("UpDown");
-        testRightLift= Input.GetAxis("RigthLift");
-        /////////////////////////////////////////////////////
-        //シールド発生処理
-        /////////////////////////////////////////////////////
-        if (Input.GetAxis("X") == 1)
-        {
-            if (bulletEnerugyBoust == false)
-            {
-                bulletEnerugy -= 2;
-                shiled.SetActive(true);
-                if (bulletEnerugy < 0)
-                {
-                    shiled.SetActive(false);
-                    bulletEnerugyBoust = true;
-                }
-            }
-        }
-        else
-        {
-            shiled.SetActive(false);
-        }
+        testRightLift = Input.GetAxis("RigthLift");
 
         Heat();
         bulletReloadText();
         bulletShoulderReloadText();
         //残りHPの更新
-        //LifeText.text = "" + Life;
+        LifeSlider.value = Life;
         //エネルギー残量の更新
-        energySlider.value = bulletEnerugy;
+        //energySlider.value = bulletEnerugy;
+        energyImage.fillAmount = bulletEnerugy/100;
         //右手残弾表示更新
         bulletAmmoText.text = "" + bulletAmmo;
         //肩残弾表示更新
@@ -521,12 +501,12 @@ public class player : MonoBehaviour
                 ptcl.SetActive(false);
                 ptclBoust.SetActive(true);
                 bulletEnerugy -= 0.2f;
+                
                 if (bulletEnerugy < 0)
-                { 
+                {
+                    boustFlag = false;
                     bulletEnerugyBoust = true;
                 }
-                speedZ = speedMax;
-                speedX = speedMax;
             }
         }
         else
@@ -536,9 +516,16 @@ public class player : MonoBehaviour
             ptclBoust.SetActive(false);
         }
 
-
-
-
+        if(boustFlag==true)
+        {
+            speedZ = speedMax;
+            speedX = speedMax;
+        }
+        else
+        {
+            speedZ = speedDf;
+            speedX = speedDf;
+        }
 
         //前移動
         if (Input.GetAxis("Vertical") <= 0)
@@ -555,12 +542,7 @@ public class player : MonoBehaviour
             shoulderLiftBurner.SetActive(true);
             moveFlag = true;
         }
-        //else
-        //{
-        //    shoulderRightBurner.SetActive(false);
-        //    shoulderLiftBurner.SetActive(false);
-        //}
-
+       
         //後ろ移動
         if (Input.GetAxis("Vertical") >= 0)
         {
@@ -572,8 +554,7 @@ public class player : MonoBehaviour
             {
                 speedZ = -speedDf;
             }
-            //shoulderRightBurner.SetActive(false);
-            //shoulderLiftBurner.SetActive(false);
+           
             moveFlag = true;
         }
         //前後移動停止
@@ -598,11 +579,7 @@ public class player : MonoBehaviour
             legLiftBurner.SetActive(true);
             moveFlag = true;
         }
-        //else
-        //{
-        //    legLiftBurner.SetActive(false);
-        //}
-
+       
         //右移動
         if (Input.GetAxis("Horizontal") <= 0)
         {
@@ -617,11 +594,7 @@ public class player : MonoBehaviour
             legRightBurner.SetActive(true);
             moveFlag = true;
         }
-        //else
-        //{
-        //    legRightBurner.SetActive(false);
-        //}
-
+       
         if (Input.GetAxis("Horizontal") == 0)
         {
             speedX = 0;

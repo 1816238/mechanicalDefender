@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class tower : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class tower : MonoBehaviour
     public string enemyBulletTag = "EnemyBullet";
     public string enemyClawTag = "Claw";
     public bool endFlag;
+    public Slider lifeSlider;
     void Start()
     {
         
@@ -22,6 +24,7 @@ public class tower : MonoBehaviour
         {
             endFlag = true;
         }
+        lifeSlider.value = life;
     }
     void OnCollisionEnter(Collision c)
     {
