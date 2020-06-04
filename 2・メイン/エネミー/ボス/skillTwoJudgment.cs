@@ -11,14 +11,20 @@ public class skillTwoJudgment : MonoBehaviour
     public float judgmentTime;
     public float judgmentTimeMax = 2.0f;
 
+    public bool targetChangeFlag;
+    public GameObject enemyBossObject;
+    enemyBoss boss;
     void Start()
     {
+        enemyBossObject = transform.root.gameObject;
         skillTwoJudgmentFlag = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        boss = enemyBossObject.GetComponent<enemyBoss>();
+        targetChangeFlag = boss.targetChangeFlag;
         if (skillTwoJudgmentFlag == true)
         {
             judgmentTime += Time.deltaTime;
@@ -35,12 +41,22 @@ public class skillTwoJudgment : MonoBehaviour
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private void OnTriggerStay(Collider c)
     {
-        if (c.gameObject.tag == "Player")
+        if (targetChangeFlag)
         {
-            skillTwoJudgmentFlag = true;
+            if (c.gameObject.tag == "Player")
+            {
+                skillTwoJudgmentFlag = true;
+            }
         }
-
+        else
+        {
+            if( c.gameObject.tag == "Tower")
+            {
+                skillTwoJudgmentFlag = true;
+            }
+        }
     }
-
-
 }
+
+
+

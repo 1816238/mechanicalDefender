@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
+
 
 public class enemyA : MonoBehaviour
 {
@@ -20,6 +22,7 @@ public class enemyA : MonoBehaviour
 
     enemyRange range;
     public float Life = 20;//ライフ
+    public Slider lifeSlider;
 
     
 
@@ -117,6 +120,8 @@ public class enemyA : MonoBehaviour
             animator.SetBool("死亡", true);
             Invoke("Destroy", 3.0f);
         }
+        //HPスライダーの更新
+        lifeSlider.value = Life;
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///-----------------------------------------弾丸生成処理-------------------------------------------------------///

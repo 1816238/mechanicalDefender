@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class enemyBoss : MonoBehaviour
 {
@@ -36,6 +37,7 @@ public class enemyBoss : MonoBehaviour
     //HP
     public float life = 100;
     public float lifeMax = 100;
+    public Slider lifeSlider;
 
     //攻撃モーションの選択フラグ
     public GameObject distance;
@@ -43,6 +45,8 @@ public class enemyBoss : MonoBehaviour
     public bool skillOneflag;
     public bool skillTwoflag;
     public bool skillThreeflag;
+    public int runSkill;
+    public int skill;
 
     //近距離攻撃範囲に入らなかった場合移動に変更
     public bool runFlag = false;
@@ -84,7 +88,7 @@ public class enemyBoss : MonoBehaviour
     public GameObject hitExplosion;
     public Transform hitExplosionPos;
     public AudioClip hitExplosionSound;//被弾爆発のサウンド
-
+    
     public string power1BulletTag = "BulletPower1";//弾丸判別
     public string power2BulletTag = "BulletPower2";//弾丸判別
     public string power3BulletTag = "BulletPower3";//弾丸判別
@@ -98,6 +102,7 @@ public class enemyBoss : MonoBehaviour
     {
         flag = true;
         atackFlag = false;
+        waitFlag = true;
         targetChangeFlag = false;
         target = GameObject.FindGameObjectWithTag("Tower");//ターゲットをTowerのタグに設定
         //攻撃判定のオブジェクトを設定
@@ -132,98 +137,158 @@ public class enemyBoss : MonoBehaviour
 
         //移動処理
         navMesh.destination = target.transform.position;
-        
-        if(runFlag==false)
+        /////////////////////////////////////////////////////
+        //旧仕様
+        /////////////////////////////////////////////////////
+        //if (runFlag==false)
+        //{
+
+        //    animator.SetBool("走る", false);
+        //    navMesh.speed = 0;
+        //    if(skillOneflag==true&&waitFlag==false)
+        //    {
+        //        animator.SetTrigger("近接攻撃A");
+        //        waitFlag = true ;
+        //    }
+
+        //    if (skillTwoflag == true && skillOneflag == false&& waitFlag == false)
+        //    {
+        //        animator.SetTrigger("近接攻撃B");
+        //        Invoke("ShortSkillTwoBulletFire", 0.5F);
+        //        waitFlag = true;
+        //    }
+
+        //    if (skillOneflag == false && skillTwoflag == false && skillThreeflag == true && waitFlag == false)
+        //    {
+        //        animator.SetTrigger("近接攻撃C");
+        //        Invoke("ShortSkillThreeBulletFire", 1.0F);
+        //        waitFlag = true;
+        //    }
+        //}
+        //else
+        //{
+        //    animator.SetBool("走る", true);
+        //    navMesh.speed = 10;
+
+        //    if (skillOneflag == true && waitFlag == false)
+        //    {
+        //        navMesh.speed = 0;
+        //        animator.SetTrigger("接近攻撃C");
+
+        //        waitFlag = true;
+        //        Invoke("RunFlagEnd", 2.0f);
+        //    }
+
+        //    if (skillTwoflag == true && waitFlag == false)
+        //    {
+        //        navMesh.speed = 0;
+        //        animator.SetTrigger("接近攻撃B");
+        //        Invoke("ShortSkillTwoBulletFire", 0.5F);
+        //        waitFlag = true;
+        //        Invoke("RunFlagEnd", 2.0f);
+        //    }
+
+        //    if (skillOneflag == false && skillTwoflag == false)
+        //    {
+        //        navMesh.speed = 10;
+
+        //    }
+        //}
+
+
+        /////////////////////////////////////////////////////
+        //ランダム選択仕様
+        /////////////////////////////////////////////////////
+        ///
+        if (waitFlag == false&&life>0)
         {
-            testFlag = false;
-            animator.SetBool("走る", false);
-            navMesh.speed = 0;
-            if(skillOneflag==true&&waitFlag==false)
+            if (runFlag == false)
             {
-                animator.SetTrigger("近接攻撃A");
-                waitFlag = true ;
-            }
-
-            if (skillTwoflag == true && skillOneflag == false&& waitFlag == false)
-            {
-                animator.SetTrigger("近接攻撃B");
-                Invoke("ShortSkillTwoBulletFire", 0.5F);
-                waitFlag = true;
-            }
-
-            if (skillOneflag == false && skillTwoflag == false && skillThreeflag == true && waitFlag == false)
-            {
-                animator.SetTrigger("近接攻撃C");
-                Invoke("ShortSkillThreeBulletFire", 1.0F);
-                waitFlag = true;
-            }
-        }
-        else
-        {
-            animator.SetBool("走る", true);
-            navMesh.speed = 5;
-
-            if (skillOneflag == true && waitFlag == false)
-            {
+                animator.SetBool("走る", false);
                 navMesh.speed = 0;
-                animator.SetTrigger("接近攻撃C");
-                
-                waitFlag = true;
-                Invoke("RunFlagEnd", 2.0f);
-                //runFlag = false;
-            }
 
-            if (skillTwoflag == true && waitFlag == false)
-            {
-                navMesh.speed = 0;
-                animator.SetTrigger("接近攻撃B");
-                Invoke("ShortSkillTwoBulletFire", 0.5F);
-                //runFlag = false;
-                waitFlag = true;
-                //runFlag = false;
-                Invoke("RunFlagEnd", 2.0f);
-            }
+                if (skill == 0)
+                {
+                    animator.SetTrigger("近接攻撃A");
+                    waitFlag = true;
+                }
 
-            if (skillOneflag == false && skillTwoflag == false)
+                if (skill == 1)
+                {
+                    animator.SetTrigger("近接攻撃B");
+                    Invoke("ShortSkillTwoBulletFire", 0.5F);
+                    waitFlag = true;
+                }
+
+                if (skill == 2)
+                {
+                    animator.SetTrigger("近接攻撃C");
+                    Invoke("ShortSkillThreeBulletFire", 1.0F);
+                    waitFlag = true;
+                }
+            }
+            else
             {
+                animator.SetBool("走る", true);
                 navMesh.speed = 10;
-                testFlag = true;
+
+                if (skillOneflag == true && waitFlag == false)
+                {
+                    navMesh.speed = 0;
+                    animator.SetTrigger("接近攻撃C");
+                    animator.SetBool("走る", false);
+                    waitFlag = true;
+                    Invoke("RunFlagEnd", 2.0f);
+                }
+
+                if (skillTwoflag == true && waitFlag == false)
+                {
+                    navMesh.speed = 0;
+                    animator.SetTrigger("接近攻撃B");
+                    animator.SetBool("走る", false);
+                    Invoke("ShortSkillTwoBulletFire", 0.5F);
+                    waitFlag = true;
+                    Invoke("RunFlagEnd", 2.0f);
+                }
+
+                if (skillOneflag == false && skillTwoflag == false)
+                {
+                    navMesh.speed = 10;
+
+                }
             }
         }
 
-        
-
-
+        /////////////////////////////////////////////////////
+        //攻撃後の待機時間
+        /////////////////////////////////////////////////////
         if (waitFlag==true)
         {
             waitTime += Time.deltaTime;
-            //runFlag = false;
-            if(waitTime>waitTimeMax)
+            
+            if (waitTime>waitTimeMax)
             {
                 if(skillOneflag == false && skillTwoflag == false && skillThreeflag == false)
                 { 
                     runFlag = true;
+                    skill= Random.Range(0, 2);
                 }
                 else
                 {
                     runFlag = false;
+                    skill = Random.Range(0, 3);
                 }
-
                     waitTime = 0;
                 waitFlag = false;
-               
-
             }
         }
-
-
-
 
         /////////////////////////////////////////////////////
         //Hp80％でターゲットをプレイヤーに変更
         /////////////////////////////////////////////////////
         if (life<lifeMax*0.8)
         {
+            targetChangeFlag = true;
             target = GameObject.FindGameObjectWithTag("Player");
 
         }
@@ -249,6 +314,9 @@ public class enemyBoss : MonoBehaviour
             Invoke("Destroy", 7.0f);
         }
 
+
+        //ライフゲージの反映
+        lifeSlider.value = life;
         //RayTest();
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class skillOwnJudgment : MonoBehaviour
 {
+
+
     //攻撃範囲に入ったかのフラグ
     public bool skillOwnJudgmentFlag;
     public bool skillOwnJudgmentActionFlag;
@@ -12,16 +14,22 @@ public class skillOwnJudgment : MonoBehaviour
     public float judgmentTime;
     public float judgmentTimeMax=2.0f;
 
+    public bool targetChangeFlag;
+    public GameObject enemyBossObject;
+    enemyBoss boss;
 
     void Start()
     {
+        enemyBossObject = transform.root.gameObject;
         skillOwnJudgmentFlag = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(skillOwnJudgmentFlag==true)
+        boss = enemyBossObject.GetComponent<enemyBoss>();
+        targetChangeFlag = boss.targetChangeFlag;
+        if (skillOwnJudgmentFlag==true)
         {
             judgmentTime +=Time.deltaTime;
             if(judgmentTime>judgmentTimeMax)
@@ -38,10 +46,21 @@ public class skillOwnJudgment : MonoBehaviour
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private void OnTriggerStay(Collider c)
     {
-        if (c.gameObject.tag == "Player")
+        if (targetChangeFlag)
         {
-            skillOwnJudgmentFlag = true;
-            skillOwnJudgmentActionFlag= true;
+            if (c.gameObject.tag == "Player" )
+            {
+                skillOwnJudgmentFlag = true;
+                skillOwnJudgmentActionFlag = true;
+            }
+        }
+        else
+        {
+            if ( c.gameObject.tag == "Tower")
+            {
+                skillOwnJudgmentFlag = true;
+                skillOwnJudgmentActionFlag = true;
+            }
         }
 
     }

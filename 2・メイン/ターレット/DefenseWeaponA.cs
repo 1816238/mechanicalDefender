@@ -133,11 +133,10 @@ public class DefenseWeaponA : MonoBehaviour
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void OnTriggerEnter(Collider c)
     {
-        if (c.tag == playerBulletTag)
+        if (c.tag == enemyBulletTag)
         {
-            //FindObjectOfType<Score>().AddPoint(10);
-
-            life -= 1;
+            
+            life -= 20;
             if (life == 0)
             {
                 deathFlag = true;

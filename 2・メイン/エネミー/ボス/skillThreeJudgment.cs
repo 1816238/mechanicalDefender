@@ -11,14 +11,22 @@ public class skillThreeJudgment : MonoBehaviour
     public float judgmentTime;
     public float judgmentTimeMax = 2.0f;
 
+    public bool targetChangeFlag;
+    public GameObject enemyBossObject;
+    enemyBoss boss;
+
     void Start()
     {
+        enemyBossObject = transform.root.gameObject;
         skillThreeJudgmentFlag = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        boss = enemyBossObject.GetComponent<enemyBoss>();
+        targetChangeFlag = boss.targetChangeFlag;
         if (skillThreeJudgmentFlag == true)
         {
             judgmentTime += Time.deltaTime;
@@ -35,12 +43,20 @@ public class skillThreeJudgment : MonoBehaviour
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private void OnTriggerStay(Collider c)
     {
-        if (c.gameObject.tag == "Player")
+        if (targetChangeFlag)
         {
-            skillThreeJudgmentFlag = true;
+            if (c.gameObject.tag == "Player")
+            {
+                skillThreeJudgmentFlag = true;
+            }
         }
-
+        else
+        {
+            if (c.gameObject.tag == "Tower")
+            {
+                skillThreeJudgmentFlag = true;
+            }
+        }
     }
-
 
 }

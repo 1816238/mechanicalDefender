@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 
 public class enemyB : MonoBehaviour
@@ -19,6 +20,7 @@ public class enemyB : MonoBehaviour
 
     public float life = 20;//ライフ
     public float lifeMax = 20;
+    public Slider lifeSlider;
 
     public bool moveFlag;//移動用のフラグ
     public bool atackFlag;//攻撃時のフラグ
@@ -144,6 +146,8 @@ public class enemyB : MonoBehaviour
             animator.SetBool("死亡", true);
             Invoke("Destroy", 3.0f);
         }
+        //HPスライダーの更新
+        lifeSlider.value = life;
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///-----------------------------------------弾丸生成処理-------------------------------------------------------///

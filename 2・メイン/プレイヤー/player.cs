@@ -19,16 +19,18 @@ public class player : MonoBehaviour
     //開始終了時フラグ
     public bool combatFlag;
 
-
     //移動速度
-    public float speedX;
-    public float speedZ;
-    public float speedDf = 10.0f;
-    public float speedMax = 20.0f;
-    public float speedUpDown = 0.0f;
+    private float speedX;
+    private float speedZ;
+    private float speedDf = 10.0f;
+    private float speedMax = 20.0f;
+    private float speedUpDown = 0.0f;
+
+    //加速時
     public bool boustFlag = false;
-    public GameObject ptcl;
-    public GameObject ptclBoust;
+    public GameObject boustSoundObject;
+    public GameObject ptclBoustRight;
+    public GameObject ptclBoustLift;
 
     //プレイヤーHP/EN
     public float Life = 1000;
@@ -54,6 +56,9 @@ public class player : MonoBehaviour
     public GameObject LeftBullet;
     public GameObject RightBullet;
     public GameObject ShoulderBullet;
+    //ショットサウンドオブジェクト
+    public GameObject shotSound;
+
 
     //弾発生箇所
     public Transform bulletStartPosLift;
@@ -172,10 +177,13 @@ public class player : MonoBehaviour
             if (bulletReload == false)
             {
                 bulletAmmo--;
-                audioSource.PlayOneShot(bulletSound);
+                shotSound.SetActive(true);
+                //audioSource.PlayOneShot(bulletSound);
+                //shotSound.SetActive(true);
                 if (bulletAmmo < 1)
                 {
                     bulletReload = true;
+                    shotSound.SetActive(false);
                 }
                 FireRight();
             }
@@ -192,41 +200,20 @@ public class player : MonoBehaviour
             }
         }
 
-        if (Input.GetAxis("Y") == 1)
-        {
-            if (bulletShoulderReload == false)
-            {
-                bulletShoulderAmoo--;
-                audioSource.PlayOneShot(bulleShouldertSound);
-                if (bulletShoulderAmoo < 1)
-                {
-                    bulletShoulderReload = true;
-                }
-                FireShoulder();
-            }
-        }
-
-        if (bulletShoulderReload == true)
-        {
-            bulletShoulderAmmoCount++;
-            if (bulletShoulderAmmoCount > bulletShoulderAmmoCountMax)
-            {
-                bulletShoulderAmmoCount = 0;
-                bulletShoulderAmoo = 100;
-                bulletShoulderReload = false;
-            }
-        }
-
+        
         if (Input.GetAxis("LT") == 1)
         {
             if (bulletEnerugyBoust == false)
             {
+                shotSound.SetActive(true);
                 bulletEnerugy--;
-                audioSource.PlayOneShot(bulletEnerugySound);
+                //audioSource.PlayOneShot(bulletEnerugySound);
+                //shotSound.SetActive(true);
                 //animator.SetBool("連射ショット", true);
                 if (bulletEnerugy < 0)
                 {
                     bulletEnerugyBoust = true;
+                    shotSound.SetActive(false);
                 }
                 FireLift();
             }
@@ -245,10 +232,23 @@ public class player : MonoBehaviour
                 }
             }
         }
+
+
+        if (Input.GetAxis("LT") == 1|| Input.GetAxis("RT") == 1)
+        {
+
+        }
+        else
+        {
+            shotSound.SetActive(false);
+        }
+
+
+
         /////////////////////////////////////////////////////
         //防衛兵器生成処理
         /////////////////////////////////////////////////////
-        if (Input.GetAxis("UpDown") == 1&&testUpDown==0)
+            if (Input.GetAxis("UpDown") == 1&&testUpDown==0)
         {
             UpCreate();
             combatFlag = true;
@@ -498,13 +498,17 @@ public class player : MonoBehaviour
             if (bulletEnerugyBoust == false)
             {
                 boustFlag = true;
-                ptcl.SetActive(false);
-                ptclBoust.SetActive(true);
+                boustSoundObject.SetActive(true);
+                ptclBoustRight.SetActive(true);
+                ptclBoustLift.SetActive(true);
                 bulletEnerugy -= 0.2f;
                 
                 if (bulletEnerugy < 0)
                 {
                     boustFlag = false;
+                    boustSoundObject.SetActive(false);
+                    ptclBoustRight.SetActive(false);
+                    ptclBoustLift.SetActive(false);
                     bulletEnerugyBoust = true;
                 }
             }
@@ -512,8 +516,9 @@ public class player : MonoBehaviour
         else
         {
             boustFlag = false;
-            ptcl.SetActive(true);
-            ptclBoust.SetActive(false);
+            boustSoundObject.SetActive(false);
+            ptclBoustRight.SetActive(false);
+            ptclBoustLift.SetActive(false);
         }
 
         if(boustFlag==true)
