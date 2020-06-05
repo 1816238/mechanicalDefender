@@ -56,16 +56,21 @@ public class enemyBoss : MonoBehaviour
     public float atackTimeOut = 2.0f;
     public float atackTime;
 
-    //近接攻撃B弾丸
+    //攻撃B弾丸
     public GameObject shortSkillTwoBullet;//オブジェクト
     public AudioClip shortSkillTwoBulletSound;//サウンド
     public Transform shortSkillTwoBulletStartPos;//生成箇所
 
-    //近接攻撃C弾丸
+    //攻撃C弾丸
     public GameObject shortSkillThreeBullet;//オブジェクト
     public AudioClip shortSkillThreeBulletSound;//サウンド
     public Transform shortSkillThreeBulletRightStartPos;//生成箇所
     public Transform shortSkillThreeBulletLiftStartPos;//生成箇所
+    public int shortSkillThreeCount;
+
+    //Vector3 shotgun;
+    public Quaternion shortSkillThreeQuaternion;
+    public Quaternion shotgun;
 
 
     public float timeMax = 5.0f;//弾丸生成間隔最大値の設定
@@ -207,20 +212,20 @@ public class enemyBoss : MonoBehaviour
                 animator.SetBool("走る", false);
                 navMesh.speed = 0;
 
-                if (skill == 0)
-                {
-                    animator.SetTrigger("近接攻撃A");
-                    waitFlag = true;
-                }
+                //if (skill == 0)
+                //{
+                //    animator.SetTrigger("近接攻撃A");
+                //    waitFlag = true;
+                //}
 
-                if (skill == 1)
+                if (skill == 0)
                 {
                     animator.SetTrigger("近接攻撃B");
                     Invoke("ShortSkillTwoBulletFire", 0.5F);
                     waitFlag = true;
                 }
 
-                if (skill == 2)
+                if (skill == 1)
                 {
                     animator.SetTrigger("近接攻撃C");
                     Invoke("ShortSkillThreeBulletFire", 1.0F);
@@ -232,7 +237,7 @@ public class enemyBoss : MonoBehaviour
                 animator.SetBool("走る", true);
                 navMesh.speed = 10;
 
-                if (skillOneflag == true && waitFlag == false)
+                if (skillOneflag == true &&skill==0&& waitFlag == false)
                 {
                     navMesh.speed = 0;
                     animator.SetTrigger("接近攻撃C");
@@ -241,7 +246,7 @@ public class enemyBoss : MonoBehaviour
                     Invoke("RunFlagEnd", 2.0f);
                 }
 
-                if (skillTwoflag == true && waitFlag == false)
+                if (skillTwoflag == true && skill == 1 && waitFlag == false)
                 {
                     navMesh.speed = 0;
                     animator.SetTrigger("接近攻撃B");
@@ -265,6 +270,7 @@ public class enemyBoss : MonoBehaviour
         if (waitFlag==true)
         {
             waitTime += Time.deltaTime;
+            //shortSkillThreeCount = 0;
             
             if (waitTime>waitTimeMax)
             {
@@ -276,7 +282,7 @@ public class enemyBoss : MonoBehaviour
                 else
                 {
                     runFlag = false;
-                    skill = Random.Range(0, 3);
+                    skill = Random.Range(0, 2);
                 }
                     waitTime = 0;
                 waitFlag = false;
@@ -290,6 +296,7 @@ public class enemyBoss : MonoBehaviour
         {
             targetChangeFlag = true;
             target = GameObject.FindGameObjectWithTag("Player");
+            transform.LookAt(target.transform);
 
         }
         /////////////////////////////////////////////////////
@@ -342,8 +349,19 @@ public class enemyBoss : MonoBehaviour
     }
     IEnumerator ShortSkillThreeCreateBullet()
     {
-        GameObject.Instantiate(shortSkillThreeBullet, shortSkillThreeBulletRightStartPos.position, shortSkillThreeBulletRightStartPos.rotation);
-        GameObject.Instantiate(shortSkillThreeBullet, shortSkillThreeBulletLiftStartPos.position, shortSkillThreeBulletLiftStartPos.rotation);
+        shortSkillThreeQuaternion= shortSkillThreeBulletRightStartPos.rotation;
+
+        //shotgun.x= Random.Range(-0, +1);
+        
+        
+        for (shortSkillThreeCount=0; shortSkillThreeCount<10; shortSkillThreeCount++)
+        {
+            shotgun.y = Random.Range(-0.3f,0.3f);
+            shortSkillThreeQuaternion.y *= shotgun.y;
+            //shortSkillThreeBulletRightStartPos.transform.rotation = transform.Rotate(shotgun);
+            GameObject.Instantiate(shortSkillThreeBullet, shortSkillThreeBulletRightStartPos.position, shortSkillThreeQuaternion);
+            GameObject.Instantiate(shortSkillThreeBullet, shortSkillThreeBulletLiftStartPos.position, shortSkillThreeBulletLiftStartPos.rotation);
+        }
         yield return null;
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

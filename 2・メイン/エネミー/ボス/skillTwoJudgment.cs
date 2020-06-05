@@ -25,6 +25,7 @@ public class skillTwoJudgment : MonoBehaviour
     {
         boss = enemyBossObject.GetComponent<enemyBoss>();
         targetChangeFlag = boss.targetChangeFlag;
+
         if (skillTwoJudgmentFlag == true)
         {
             judgmentTime += Time.deltaTime;
