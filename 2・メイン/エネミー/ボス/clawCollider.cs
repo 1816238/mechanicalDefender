@@ -8,11 +8,6 @@ public class clawCollider : MonoBehaviour
     public bool colliderFlag;
     public GameObject enemyBossObject;
     
-
-    player playerCombatFlag;
-    public bool MoveFlag;
-    public GameObject player;
-
     void Start()
     {
         enemyBossObject = transform.root.gameObject;

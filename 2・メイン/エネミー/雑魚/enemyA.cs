@@ -47,7 +47,9 @@ public class enemyA : MonoBehaviour
     public GameObject hitExplosion;//被弾爆発のオブジェクト
     public Transform hitExplosionPos;//被弾爆発の発生個所
     public AudioClip hitExplosionSound;//被弾爆発のサウンド
-
+    public bool hitExplosionFlag;
+    public float hitExplosionInterva;//被弾爆発を生成させる間隔
+    public float hitExplosionIntervaMax;//被弾爆発を生成させる間隔最大値
 
     public string power1BulletTag = "BulletPower1";//弾丸判別
     public string power2BulletTag = "BulletPower2";//弾丸判別
@@ -60,6 +62,7 @@ public class enemyA : MonoBehaviour
     {
         atackFlag = false;//攻撃判定初期化
         deathFlag = false;//死亡判定初期化
+        hitExplosionFlag = false;
         target = GameObject.FindGameObjectWithTag("Tower");//ターゲットをTowerのタグに設定
         atackRange = transform.GetChild(2).gameObject;
         navMesh = GetComponent<NavMeshAgent>();
@@ -99,6 +102,22 @@ public class enemyA : MonoBehaviour
             animator.SetBool("攻撃", false);
             navMesh.speed = 5;
         }
+        /////////////////////////////////////////////////////
+        //被弾処理
+        /////////////////////////////////////////////////////
+        if(hitExplosionFlag==true&&hitExplosionInterva<=0)
+        {
+            audioSource.PlayOneShot(hitExplosionSound);
+            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            hitExplosionInterva = hitExplosionIntervaMax;
+        }
+        if(hitExplosionInterva>0)
+        {
+            hitExplosionInterva -= Time.deltaTime;
+            hitExplosionFlag = false;
+        }
+
+
         /////////////////////////////////////////////////////
         //死亡処理
         /////////////////////////////////////////////////////
@@ -144,36 +163,41 @@ public class enemyA : MonoBehaviour
         if (c.tag == power1BulletTag)
         {
             //FindObjectOfType<Score>().AddPoint(10);
-            audioSource.PlayOneShot(hitExplosionSound);
-            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            //audioSource.PlayOneShot(hitExplosionSound);
+            //GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            hitExplosionFlag = true;
             Life -= 1;
         }
         if (c.tag == power2BulletTag)
         {
             //FindObjectOfType<Score>().AddPoint(10);
-            audioSource.PlayOneShot(hitExplosionSound);
-            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            //audioSource.PlayOneShot(hitExplosionSound);
+            //GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            hitExplosionFlag = true;
             Life -= 2;
         }
         if (c.tag == power3BulletTag)
         {
             //FindObjectOfType<Score>().AddPoint(10);
-            audioSource.PlayOneShot(hitExplosionSound);
-            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            //audioSource.PlayOneShot(hitExplosionSound);
+            //GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            hitExplosionFlag = true;
             Life -= 3;
         }
         if (c.tag == power4BulletTag)
         {
             //FindObjectOfType<Score>().AddPoint(10);
-            audioSource.PlayOneShot(hitExplosionSound);
-            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            //audioSource.PlayOneShot(hitExplosionSound);
+            //GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            hitExplosionFlag = true;
             Life -= 4;
         }
         if (c.tag == power5BulletTag)
         {
             //FindObjectOfType<Score>().AddPoint(10);
-            audioSource.PlayOneShot(hitExplosionSound);
-            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            //audioSource.PlayOneShot(hitExplosionSound);
+            //GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            hitExplosionFlag = true;
             Life -= 5;
         }
 

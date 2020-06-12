@@ -95,20 +95,23 @@ public class WaveSetUp : MonoBehaviour
         if (intervalFlag == false)
         {
             //出現地点のランダム取得
-            number = Random.Range(0, enemySetPos.Length);
+            
             //ウェーブ1
             if (waveCount == 0)
             {
+                number = Random.Range(0, enemySetPos.Length-6);
                 Wave1();
             }
             //ウェーブ2
             if (waveCount == 1)
             {
+                number = Random.Range(6, enemySetPos.Length);
                 Wave2();
             }
             //ウェーブ3
             if (waveCount == 2)
             {
+                number = Random.Range(0, enemySetPos.Length);
                 Wave3();
             }
         }

@@ -44,6 +44,9 @@ public class enemyB : MonoBehaviour
     public GameObject hitExplosion;//被弾爆発のオブジェクト
     public Transform hitExplosionPos;//被弾爆発の発生個所
     public AudioClip hitExplosionSound;//被弾爆発のサウンド
+    public bool hitExplosionFlag;
+    public float hitExplosionInterva;//被弾爆発を生成させる間隔
+    public float hitExplosionIntervaMax;//被弾爆発を生成させる間隔最大値
 
     public string power1BulletTag = "BulletPower1";//弾丸判別
     public string power2BulletTag = "BulletPower2";//弾丸判別
@@ -118,7 +121,20 @@ public class enemyB : MonoBehaviour
             }
 
         }
-
+        /////////////////////////////////////////////////////
+        //被弾処理
+        /////////////////////////////////////////////////////
+        if (hitExplosionFlag == true && hitExplosionInterva <= 0)
+        {
+            audioSource.PlayOneShot(hitExplosionSound);
+            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            hitExplosionInterva = hitExplosionIntervaMax;
+        }
+        if (hitExplosionInterva > 0)
+        {
+            hitExplosionInterva -= Time.deltaTime;
+            hitExplosionFlag = false;
+        }
 
 
 
@@ -170,36 +186,41 @@ public class enemyB : MonoBehaviour
         if (c.tag == power1BulletTag)
         {
             //FindObjectOfType<Score>().AddPoint(10);
-            audioSource.PlayOneShot(hitExplosionSound);
-            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            //audioSource.PlayOneShot(hitExplosionSound);
+            //GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            hitExplosionFlag = true;
             life -= 1;
         }
         if (c.tag == power2BulletTag)
         {
             //FindObjectOfType<Score>().AddPoint(10);
-            audioSource.PlayOneShot(hitExplosionSound);
-            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            //audioSource.PlayOneShot(hitExplosionSound);
+            //GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            hitExplosionFlag = true;
             life -= 2;
         }
         if (c.tag == power3BulletTag)
         {
             //FindObjectOfType<Score>().AddPoint(10);
-            audioSource.PlayOneShot(hitExplosionSound);
-            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            //audioSource.PlayOneShot(hitExplosionSound);
+            //GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            hitExplosionFlag = true;
             life -= 3;
         }
         if (c.tag == power4BulletTag)
         {
             //FindObjectOfType<Score>().AddPoint(10);
-            audioSource.PlayOneShot(hitExplosionSound);
-            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            //audioSource.PlayOneShot(hitExplosionSound);
+            //GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            hitExplosionFlag = true;
             life -= 4;
         }
         if (c.tag == power5BulletTag)
         {
             //FindObjectOfType<Score>().AddPoint(10);
-            audioSource.PlayOneShot(hitExplosionSound);
-            GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            //audioSource.PlayOneShot(hitExplosionSound);
+            //GameObject.Instantiate(hitExplosion, hitExplosionPos.position, hitExplosionPos.rotation);
+            hitExplosionFlag = true;
             life -= 5;
         }
 
