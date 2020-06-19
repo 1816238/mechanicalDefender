@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class enemyMercenary : MonoBehaviour
+public class EnemyMercenary : MonoBehaviour
 {
     Rigidbody re;
     Vector3 velocity;
@@ -11,9 +11,34 @@ public class enemyMercenary : MonoBehaviour
     public GameObject player;
     private Transform targetObj;
 
+    //オーディオソース
+    AudioSource audioSource;
+
+    //生存中のフラグ
+    public bool flag;
+    public float life = 1000;
+
+    //爆発
+    public GameObject explosion;//爆発オブジェクト
+    public Transform explosionPos;//爆発オブジェクト発生個所
+    public AudioClip explosionSound;
+    public GameObject hitExplosion;//被弾爆発オブジェクト
+    public AudioClip hitExplosionSound;
+    public float explosionWaitTime;//爆発発生の処理を増やしすぎないための時間
+    public bool hitExplosionFlag;
+    public float hitExplosionInterva;//被弾爆発を生成させる間隔
+    public float hitExplosionIntervaMax=1;//被弾爆発を生成させる間隔最大値
+
+    //死亡時のフラグ
+    public bool explosionFlag;
+    private bool oneExplosionFlag;
+    //public float explosionWaitTime;
+
+
     //弾丸オブジェクト
     public GameObject rightBullet;
     public GameObject liftBullet;
+    public GameObject shoulderBullet;
 
     //弾発生箇所
     public Transform bulletStartPosLift;
@@ -24,50 +49,83 @@ public class enemyMercenary : MonoBehaviour
     //移動速度
     private float speedX;
     private float speedZ;
-    private float speedDf = 10.0f;
-    private float speedMax = 20.0f;
+    public float speedDf = 40.0f;
+    public float speedMax = 60.0f;
     private float speedUpDown = 0.0f;
 
     //移動状態のフラグ
-    public bool moveFlag = false;
-    public bool boustFlag = false;
-
-    public float moveLeftRight;
-    public float moveFrontBack;
-
-    public float moveTime;
-    public float moveTimeMax;
-
+    private bool moveFlag = false;
+    private bool boustFlag = false;
+    //移動方向を決める数値
+    private float moveLeftRight;
+    private float moveFrontBack;
+    //移動方向変更までの時間
+    private float moveTime;
+    private float moveTimeMax;
+    //攻撃方法変更までの時間
     public float atackTime;
-    public float atackTimeMax;
+    public float atackTimeMax=5;
+    public float atackTimeAdjustment1=1;
+    public float atackTimeAdjustment2= 1;
+    public float atackTimeAdjustment3= 1;
+    //攻撃時のサウンド
+    public AudioClip atackType1;
+    public GameObject atackType2;
+    public AudioClip atackType3;
+    //攻撃中のフラグ
     public bool atackFlag;
-
-    public int atackTipe;
+    //攻撃の種類
+    public int atackType;
+    //待機時間：待機時間＞最大値を超えた時攻撃発生
     public float waitTime;
-    public float waitTimeMax;
-   
+    private float waitTimeMax=5;
+    
+
+
+    public string power1BulletTag = "BulletPower1";//弾丸判別
+    public string power2BulletTag = "BulletPower2";//弾丸判別
+    public string power3BulletTag = "BulletPower3";//弾丸判別
+    public string power4BulletTag = "BulletPower4";//弾丸判別
+    public string power5BulletTag = "BulletPower5";//弾丸判別
+
+
 
     //public Vector3 distance;
     [SerializeField]
     private Text distanceUI;
     void Start()
     {
+        flag = true;
+        explosionFlag = false;
+        oneExplosionFlag = false;
         player = GameObject.FindGameObjectWithTag("Player");//ターゲットをTowerのタグに設定
         targetObj = player.transform;
         re = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
         speedX = 0;
-        atackTipe = 1;
+        atackType = 1;
     }
     void Update()
     {
-        move();
-        atack();
-       
+        if (flag)
+        {
+            Move();
+            Atack();
+            HitExplosion();
+            if(life<0)
+            {
+                flag = false;
+            }
+        }
+        else
+        {
+            Explosion();
+        }
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///-----------------------------------------移動処理-----------------------------------------------------------///
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void move()
+    void Move()
     {
      
         moveTime += Time.deltaTime;
@@ -184,69 +242,55 @@ public class enemyMercenary : MonoBehaviour
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///-----------------------------------------攻撃処理-----------------------------------------------------------///
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void atack()
+    void Atack()
     {
         //攻撃変更時間を増加
         atackTime += Time.deltaTime;
         //攻撃方法を時間でランダム選択変更
         if (atackTime>atackTimeMax)
         {
-           atackTipe = Random.Range(1,4);
+            atackType2.SetActive(false);
+            atackType = Random.Range(1,4);
+            
            atackTime = 0;
         }
 
         if(atackFlag)
         {
-            //atackTipe += Time.deltaTime;
-            waitTime += Time.deltaTime;
+            //atackType += Time.deltaTime;
+            waitTime += Time.deltaTime;//攻撃の待機時間を増加
 
-            switch (atackTipe)
+            switch (atackType)
             {
-                case 1:
-                    if (waitTime > waitTimeMax)
+                case 1://待機時間＞再大待機時間/攻撃種類ごとの調整数値
+                    if (waitTime > waitTimeMax/ atackTimeAdjustment1)
                     {
                         FireRight();
+                        audioSource.PlayOneShot(atackType1);
                         waitTime = 0;
                     }
                     break;
                   
                 case 2:
-                    if (waitTime > waitTimeMax / 10)
+                    if (waitTime > waitTimeMax / atackTimeAdjustment2)
                     {
                         FireLift();
+                        atackType2.SetActive(true);
                         waitTime = 0;
                     }
                     break;
 
                 case 3:
-                    if (waitTime > waitTimeMax)
+                    if (waitTime > waitTimeMax/ atackTimeAdjustment3)
                     {
-                        FireRight();
-                        FireLift();
+                        FireShoulder();
+                        audioSource.PlayOneShot(atackType3);
                         waitTime = 0;
                     }
                     break;
 
             }
 
-
-
-            //if (atackMode.Length==1)
-            //{
-            //    if (atackTipe > atackTipeMax)
-            //    {
-            //        FireRight();
-            //        atackTipe = 0;
-            //    }
-            //}
-            //if (atackMode.Length == 2)
-            //{
-            //    if (atackTipe > atackTipeMax)
-            //    {
-            //        FireRight();
-            //        atackTipe = 0;
-            //    }
-            //}
 
         }
         
@@ -275,5 +319,84 @@ public class enemyMercenary : MonoBehaviour
         GameObject.Instantiate(liftBullet, bulletStartPosLift.position, bulletStartPosLift.rotation);
         yield return null;
     }
+    //弾丸の肩生成処理//////////////////////////////////////////////////////////////////////////////////////////////
+    void FireShoulder()
+    {
+        //弾丸の作成ルーチンはコルーチンを使用
+        StartCoroutine(this.CreateBlleutShoulder());
+    }
+    //肩弾丸を作成//////////////////////////////////////////////////////////////////////////////////////////////////
+    IEnumerator CreateBlleutShoulder()///////////////////////////////////////////////////////////////////////////////////
+    {
+        GameObject.Instantiate(shoulderBullet, bulletStartPosShoulderLift.position, bulletStartPosShoulderLift.rotation);
+        GameObject.Instantiate(shoulderBullet, bulletStartPosShoulderRight.position, bulletStartPosShoulderRight.rotation);
+
+        yield return null;
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///-----------------------------------------被弾処理-----------------------------------------------------------///
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    void OnTriggerEnter(Collider c)
+    {
+        if (c.tag == power1BulletTag)
+        {
+            hitExplosionFlag = true;
+            life -= 1;
+        }
+        if (c.tag == power2BulletTag)
+        {
+            hitExplosionFlag = true;
+            life -= 2;
+        }
+        if (c.tag == power3BulletTag)
+        {
+            hitExplosionFlag = true;
+            life -= 3;
+        }
+        if (c.tag == power4BulletTag)
+        {
+            hitExplosionFlag = true;
+            life -= 4;
+        }
+        if (c.tag == power5BulletTag)
+        {
+            hitExplosionFlag = true;
+            life -= 5;
+        }
+
+
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///-----------------------------------------被弾爆発生成処理---------------------------------------------------///
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    void HitExplosion()
+    {
+        if (hitExplosionFlag == true && hitExplosionInterva <= 0)
+        {
+            audioSource.PlayOneShot(hitExplosionSound);
+            GameObject.Instantiate(hitExplosion, explosionPos.position, explosionPos.rotation);
+            hitExplosionInterva = hitExplosionIntervaMax;
+        }
+        if (hitExplosionInterva > 0)
+        {
+            hitExplosionInterva -= Time.deltaTime;
+            hitExplosionFlag = false;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///-----------------------------------------死亡処理---------------------------------------------------///
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    void Explosion()
+    {
+        if(oneExplosionFlag==false)
+        {
+            GameObject.Instantiate(explosion, explosionPos.position, explosionPos.rotation);
+            audioSource.PlayOneShot(explosionSound);
+            oneExplosionFlag = true;
+        }
+        Destroy(gameObject,3);
+    }
+
+
 }
 

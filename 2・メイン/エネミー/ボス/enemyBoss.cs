@@ -94,7 +94,7 @@ public class enemyBoss : MonoBehaviour
     public Transform hitExplosionPos;
     public AudioClip hitExplosionSound;//被弾爆発のサウンド
     public float hitExplosionInterva;//被弾爆発を生成させる間隔
-    public float hitExplosionIntervaMax;//被弾爆発を生成させる間隔最大値
+    public float hitExplosionIntervaMax=1;//被弾爆発を生成させる間隔最大値
     public bool hitExplosionFlag;
 
     public string power1BulletTag = "BulletPower1";//弾丸判別

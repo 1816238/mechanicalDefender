@@ -37,6 +37,6 @@ public class TitelManager : MonoBehaviour
     }
     void mainDefenderScene()
     {
-        SceneManager.LoadScene("MainDefender");
+        SceneManager.LoadScene("ModeSelect");
     }
 }
